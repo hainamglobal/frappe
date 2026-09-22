@@ -17,5 +17,6 @@ def get_context(context):
 	return {
 		"error": frappe.get_traceback().replace("<", "&lt;").replace(">", "&gt;")
 		if is_traceback_allowed()
-		else ""
+		else "",
+		"maintenance_mode": getattr(frappe.local.conf, "maintenance_mode", 0)
 	}
