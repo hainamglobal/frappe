@@ -39,7 +39,7 @@
 	.maintenance-icon {
 		width: 100px;
 		height: 100px;
-		color: #4dabf7;
+		color: #0149C1;
 	}
 	.error-title {
 		font-size: 2.2rem;
@@ -73,15 +73,15 @@
 		justify-content: center;
 	}
 	.btn-primary-custom {
-		background-color: #4dabf7;
+		background-color: #0149C1;
 		color: white;
 		border: none;
-		box-shadow: 0 4px 12px rgba(77, 171, 247, 0.3);
+		box-shadow: 0 4px 12px rgba(1, 73, 193, 0.3);
 	}
 	.btn-primary-custom:hover {
-		background-color: #3b82f6;
+		background-color: #013b9a;
 		color: white;
-		box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+		box-shadow: 0 6px 16px rgba(1, 73, 193, 0.4);
 		transform: translateY(-2px);
 		text-decoration: none;
 	}
@@ -97,33 +97,7 @@
 		text-decoration: none;
 	}
 	
-	.dev-info-section {
-		margin-top: 3rem;
-		border-top: 1px dashed #e2e8f0;
-		padding-top: 2rem;
-		width: 100%;
-	}
-	
-	.error-content {
-		border-radius: 8px;
-		background-color: #1e1e1e;
-		margin: 1.5rem auto 0;
-		text-align: left;
-		padding: 1.5rem;
-		box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
-		overflow-x: auto;
-	}
-	
-	.error-content code {
-		color: #d4d4d4;
-		font-family: 'Fira Code', 'Consolas', monospace;
-		font-size: 0.9rem;
-	}
 
-	code::-webkit-scrollbar {
-		display: none;
-	}
-	
 	.alert-box {
 		background-color: #fff5f5;
 		border-left: 4px solid #fc8181;
@@ -178,39 +152,6 @@
 		</a>
 	</div>
 	
-	<div class="dev-info-section">
-		<p class="text-muted small mb-2">
-			Mã lỗi (Error Code): <strong>{{ http_status_code }}</strong>
-		</p>
-		
-		{% if dev_server or error %}
-		<div class="mt-3">
-			<button class="btn btn-sm btn-outline-secondary view-error">
-				{{ _("Show Error Details") if not dev_server else _("Hide Error Details") }}
-			</button>
-		</div>
-		
-		<div class="error-content {{ 'hidden' if not dev_server else '' }}">
-			<pre><code>{{ error }}</code></pre>
-		</div>
-		{% endif %}
-	</div>
+
 </div>
-{% endblock %}
-
-{% block script %}
-<script>
-	let toggle_button = $(".view-error");
-	let error_log = $(".error-content");
-
-	toggle_button.on('click', () => {
-		if (error_log.hasClass("hidden")) {
-			toggle_button.html(`{{ _("Hide Error Details") }}`);
-			error_log.removeClass("hidden");
-		} else {
-			toggle_button.html(`{{ _("Show Error Details") }}`);
-			error_log.addClass("hidden");
-		}
-	})
-</script>
 {% endblock %}
