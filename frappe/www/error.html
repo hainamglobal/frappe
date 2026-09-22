@@ -6,43 +6,195 @@
 <link rel="stylesheet" href="/assets/frappe/css/hljs-night-owl.css">
 {% endblock -%}
 
-
 {% block page_content %}
 <style>
+	.error-page-wrapper {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		min-height: 70vh;
+		text-align: center;
+		padding: 2rem;
+		background: #ffffff;
+		border-radius: 12px;
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+		margin: 2rem auto;
+		max-width: 900px;
+	}
+	.error-icon-wrapper {
+		margin-bottom: 1.5rem;
+		animation: float 3s ease-in-out infinite;
+	}
+	@keyframes float {
+		0% { transform: translateY(0px); }
+		50% { transform: translateY(-10px); }
+		100% { transform: translateY(0px); }
+	}
+	.error-icon {
+		width: 100px;
+		height: 100px;
+		color: #ff6b6b;
+	}
+	.maintenance-icon {
+		width: 100px;
+		height: 100px;
+		color: #4dabf7;
+	}
+	.error-title {
+		font-size: 2.2rem;
+		font-weight: 700;
+		color: #2d3748;
+		margin-bottom: 1rem;
+		letter-spacing: -0.02em;
+	}
+	.error-desc {
+		font-size: 1.1rem;
+		color: #718096;
+		max-width: 550px;
+		margin-bottom: 2rem;
+		line-height: 1.7;
+	}
+	.action-buttons {
+		display: flex;
+		gap: 1rem;
+		justify-content: center;
+		flex-wrap: wrap;
+	}
+	.btn-custom {
+		padding: 0.75rem 1.75rem;
+		border-radius: 8px;
+		font-weight: 600;
+		font-size: 1rem;
+		transition: all 0.3s ease;
+		text-decoration: none;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.btn-primary-custom {
+		background-color: #4dabf7;
+		color: white;
+		border: none;
+		box-shadow: 0 4px 12px rgba(77, 171, 247, 0.3);
+	}
+	.btn-primary-custom:hover {
+		background-color: #3b82f6;
+		color: white;
+		box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+		transform: translateY(-2px);
+		text-decoration: none;
+	}
+	.btn-secondary-custom {
+		background-color: #f1f3f5;
+		color: #495057;
+		border: 1px solid #e9ecef;
+	}
+	.btn-secondary-custom:hover {
+		background-color: #e9ecef;
+		color: #212529;
+		transform: translateY(-2px);
+		text-decoration: none;
+	}
+	
+	.dev-info-section {
+		margin-top: 3rem;
+		border-top: 1px dashed #e2e8f0;
+		padding-top: 2rem;
+		width: 100%;
+	}
+	
 	.error-content {
 		border-radius: 8px;
-		background-color: #f5f7fa;
-		margin: 3rem auto;
+		background-color: #1e1e1e;
+		margin: 1.5rem auto 0;
+		text-align: left;
+		padding: 1.5rem;
+		box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+		overflow-x: auto;
+	}
+	
+	.error-content code {
+		color: #d4d4d4;
+		font-family: 'Fira Code', 'Consolas', monospace;
+		font-size: 0.9rem;
 	}
 
 	code::-webkit-scrollbar {
 		display: none;
 	}
-	{% include "templates/styles/card_style.css"%}
+	
+	.alert-box {
+		background-color: #fff5f5;
+		border-left: 4px solid #fc8181;
+		padding: 1rem;
+		border-radius: 4px;
+		margin-bottom: 1.5rem;
+		text-align: left;
+		color: #c53030;
+	}
 </style>
-<script></script>
-<div class="page-card">
-	<div class="page-card-head">
-		<span class="indicator red">{{ error_title }}</span>
-	</div>
-	<p>{{ error_message }}</p>
-	<div>
-		<a href="/" class="btn btn-primary btn-sm">{{ _("Home") }}</a>
-	</div>
-</div>
-<p class="text-muted text-center small" style="margin-top: -20px;">
-	{{ _("Error Code: {0}").format(http_status_code) }}
-</p>
-<div class="text-center mt-3">
-	<p class="text-muted text-center small">
-		If you don't know what just happened, and wish to file a ticket
-		please </br> <b>copy the error below </b> and share it.
-	</p>
-	<button class="btn btn-xs btn-secondary text-muted small view-error" >{{ _("Show Error") if not dev_server else _("Hide Error") }}</a>
-</div>
 
-<div class="error-content {{ 'hidden' if not dev_server else '' }}">
-	<pre><code>{{ error }}</code></pre>
+<div class="error-page-wrapper">
+	{% if maintenance_mode %}
+	<div class="error-icon-wrapper">
+		<svg class="maintenance-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+		</svg>
+	</div>
+	<h1 class="error-title">Hệ thống đang bảo trì</h1>
+	<p class="error-desc">
+		Chúng tôi đang tiến hành nâng cấp và bảo trì hệ thống để mang lại trải nghiệm tốt hơn. 
+		Quá trình này sẽ sớm hoàn tất. Vui lòng quay lại sau ít phút. Xin lỗi vì sự bất tiện này!
+	</p>
+	{% else %}
+	<div class="error-icon-wrapper">
+		<svg class="error-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+		</svg>
+	</div>
+	<h1 class="error-title">Rất tiếc! Đã xảy ra lỗi</h1>
+	
+	<div class="alert-box">
+		<strong>{{ error_title }}</strong><br>
+		{{ error_message }}
+	</div>
+	
+	<p class="error-desc">
+		Hệ thống có thể đang gặp sự cố tạm thời hoặc đang trong quá trình bảo trì. 
+		Vui lòng thử lại sau, hoặc liên hệ với bộ phận hỗ trợ nếu sự cố vẫn tiếp diễn.
+	</p>
+	{% endif %}
+
+	<div class="action-buttons">
+		<a href="/" class="btn-custom btn-primary-custom">
+			<svg style="width: 20px; height: 20px; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+			Trang chủ
+		</a>
+		<a href="javascript:window.location.reload();" class="btn-custom btn-secondary-custom">
+			<svg style="width: 20px; height: 20px; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+			Thử lại
+		</a>
+	</div>
+	
+	<div class="dev-info-section">
+		<p class="text-muted small mb-2">
+			Mã lỗi (Error Code): <strong>{{ http_status_code }}</strong>
+		</p>
+		
+		{% if dev_server or error %}
+		<div class="mt-3">
+			<button class="btn btn-sm btn-outline-secondary view-error">
+				{{ _("Show Error Details") if not dev_server else _("Hide Error Details") }}
+			</button>
+		</div>
+		
+		<div class="error-content {{ 'hidden' if not dev_server else '' }}">
+			<pre><code>{{ error }}</code></pre>
+		</div>
+		{% endif %}
+	</div>
 </div>
 {% endblock %}
 
@@ -53,10 +205,10 @@
 
 	toggle_button.on('click', () => {
 		if (error_log.hasClass("hidden")) {
-			toggle_button.html(`{{ _("Hide Error") }}`);
+			toggle_button.html(`{{ _("Hide Error Details") }}`);
 			error_log.removeClass("hidden");
 		} else {
-			toggle_button.html(`{{ _("Show Error") }}`);
+			toggle_button.html(`{{ _("Show Error Details") }}`);
 			error_log.addClass("hidden");
 		}
 	})
